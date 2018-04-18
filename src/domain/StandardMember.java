@@ -6,7 +6,7 @@ public class StandardMember  {
 
     private String firstName;
     private String lastName;
-    private  double rentalFees;
+    private  double payment;
     private static int count =1;
     private int id;
 
@@ -32,30 +32,35 @@ public class StandardMember  {
 
 
 
-    public double getRentalFees() {
-        return rentalFees;
+    public double getPayment() {
+        return payment;
     }
 
-    public void setRentalFees(double rentalFees) {
-        this.rentalFees = rentalFees;
+    public void setPayment(double payment) {
+        this.payment = payment;
     }
 
     public StandardMember() {
 
     }
 
-    public StandardMember(String firstName, String lastName, double rentalFees) {
+    public double addPayment(double newPayment){
+        this.payment += newPayment;
+        return newPayment;
+    }
+
+    public StandardMember(String firstName, String lastName, double payment) {
         id=count++;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.rentalFees = rentalFees;
+        this.payment = payment;
     }
 
     public StandardMember(String firstName, String lastName) {
 
         this.firstName = firstName;
         this.lastName = lastName;
-        this.rentalFees=0.00;
+        this.payment =0.00;
     }
 
     @Override
@@ -63,7 +68,7 @@ public class StandardMember  {
         return "StandardMember{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", rentalFees=" + rentalFees + + '\'' +
+                ", payment=" + payment + + '\'' +
                 ", id=" + id +
                 '}';
     }
