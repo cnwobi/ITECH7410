@@ -9,22 +9,22 @@ public class StandardMember  {
     private  double payment;
     private static int count =1;
     private int id;
+    private static double totalPayment;
+    private static final double DISCOUNTEDAMOUNT=0.0;
+
+
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+
 
     public int getId() {
         return id;
@@ -33,20 +33,37 @@ public class StandardMember  {
 
 
     public double getPayment() {
+
+
         return payment;
+    }
+
+    public static double getTotalPayment() {
+
+        return totalPayment;
+    }
+
+
+    public static double getDISCOUNTEDAMOUNT() {
+        return DISCOUNTEDAMOUNT;
     }
 
     public void setPayment(double payment) {
         this.payment = payment;
     }
 
-    public StandardMember() {
+
+
+    public void addPayment(double newPayment){
+        this.payment += newPayment;
+        totalPayment+=payment;
 
     }
 
-    public double addPayment(double newPayment){
-        this.payment += newPayment;
-        return newPayment;
+    public StandardMember(String firstName, String lastName) {
+        id=count++;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public StandardMember(String firstName, String lastName, double payment) {
@@ -54,14 +71,11 @@ public class StandardMember  {
         this.firstName = firstName;
         this.lastName = lastName;
         this.payment = payment;
+        totalPayment+=payment;
+
+
     }
 
-    public StandardMember(String firstName, String lastName) {
-
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.payment =0.00;
-    }
 
     @Override
     public String toString() {
@@ -72,4 +86,5 @@ public class StandardMember  {
                 ", id=" + id +
                 '}';
     }
+
 }

@@ -3,31 +3,57 @@ package domain;
 import services.Discount;
 
 public class LoyaltyMember extends StandardMember implements Discount {
-private double discountedAmount;
-private double discount;
-
-
+    private double discountedPayment;
+    private double discount;
+    private static double totalDiscountedPayment;
+    private static double totalDiscountGiven;
 
     public LoyaltyMember(String firstName, String lastName, double payment) {
-        super(firstName, lastName, payment);
-
+        super(firstName, lastName);
+        super.setPayment(payment);
+        discount();
     }
 
     @Override
-    public double discount(double rentalFees) {
-        discount=0.1*getPayment();
-        discountedAmount = 0.9*getPayment();
-        setPayment(discountedAmount);
-        return discountedAmount;
+    public void discount() {
+        discount += 0.1 * getPayment();
+        totalDiscountGiven += discount;
+        System.out.println("totalDiscountGiven: " + totalDiscountGiven);
+        discountedPayment += 0.9 * getPayment();
+        totalDiscountedPayment += discountedPayment;
+        super.setPayment(discountedPayment);
+
 
     }
+
     @Override
     public double getPayment() {
         return super.getPayment();
     }
 
+
+    public double getDiscount() {
+        return discount;
+    }
+
     @Override
-    public void setPayment(double payment) {
-        super.setPayment(payment);
+    public void addPayment(double newPayment) {
+        discount += 0.2 * newPayment;
+        totalDiscountGiven += discount;
+        discountedPayment += 0.8 * newPayment;
+        totalDiscountedPayment += discountedPayment;
+        super.setPayment(discountedPayment);
+    }
+
+    public double getDiscountedPayment() {
+        return discountedPayment;
+    }
+
+    public static double getTotalDiscountGiven() {
+        return totalDiscountGiven;
+    }
+
+    public static double getTotalDiscountedPayment() {
+        return totalDiscountedPayment;
     }
 }

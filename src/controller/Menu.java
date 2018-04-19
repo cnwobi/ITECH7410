@@ -1,13 +1,21 @@
 package controller;
 
+import domain.LoyaltyMember;
+import domain.StaffMember;
 import domain.StandardMember;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Menu {
     int id = 1;
+    private static int hardcodedLoyalty = 0;
+    private static int hardcodedEmployee = 0;
+    private static int hardcodedStandard = 0;
     ArrayList<StandardMember> standardMembers = new ArrayList<StandardMember>();
-    
+    ArrayList<LoyaltyMember> loyaltyMembers = new ArrayList<>();
+    ArrayList<StaffMember> staffMembers = new ArrayList<>();
+
     public void displayUserMenu() {
         // Control the menu navigation.  Includes display of menu, acceptance and processing of user input and
         // exiting the menu based on the user's selections.
@@ -69,9 +77,6 @@ public class Menu {
         switch (menuSelection) {
             case 1:
                 // call method to process standard payments here
-                System.out.println("--Processing Standard Payment--");
-
-
                 standardPayment();
                 break;
             case 2:
@@ -82,14 +87,35 @@ public class Menu {
             case 3:
                 // call method to process employee payments here
                 System.out.println("--Processing Employee Payment--");
+                employeePayment();
                 break;
             case 4:
                 // call method to  display list of clients here
-                System.out.println("--List of Clients--");
+
+                listClients();
                 break;
             case 5:
                 // call method to generate report to display payments received here
                 System.out.println("--Report to View Payments Received--");
+                dash();
+                System.out.println();
+                System.out.printf("%-30s %-30s %-30s  ", "Type of Account", "Total Amount Received", "Discounts Given");
+                System.out.println();
+                dash();
+                System.out.println();
+                System.out.printf("%-30s %-15s %.2f %-15s %.2f  ", "Standard", "", StandardMember.getTotalPayment(), "", StandardMember.getDISCOUNTEDAMOUNT());
+                System.out.println();
+                System.out.printf("%-30s %-15s %.2f %-15s %.2f  ", "Loyalty", "", LoyaltyMember.getTotalDiscountedPayment(), "", LoyaltyMember.getTotalDiscountGiven());
+                System.out.println();
+                System.out.printf("%-30s %-15s %.2f %-15s %.2f  ", "Employee", "", StaffMember.getTotalDiscountedPayment(), "", StaffMember.getTotalDiscountGiven());
+                System.out.println();
+                dash();
+                double grandTotalDiscount = StaffMember.getTotalDiscountGiven() + LoyaltyMember.getTotalDiscountGiven();
+                double grandTotal = StandardMember.getTotalPayment() + LoyaltyMember.getTotalDiscountedPayment() + StaffMember.getTotalDiscountedPayment();
+                System.out.printf("\n%-30s %-15s %.2f %-15s %.2f  ", "Total", "", grandTotal, "", grandTotalDiscount);
+                System.out.println();
+                dash();
+                System.out.println();
                 break;
             case 6:
                 System.out.println("-- Exiting FedHire Payment System --\n ....\n  -- Goodbye! --\n");
@@ -103,18 +129,114 @@ public class Menu {
     }
 
 
+
+
+
     public void standardPayment() {
         //This method processes the standard Member payment logic
-        //print out the list of Standard Payment clients
-        System.out.println("--List of Clients--\n" +
-                "Client ID                  Name                   Total Amount              Discounted Amount");
 
-        standardMembers.forEach(standardMember -> System.out.printf("\n%1d. %-23s %-2s %-20s %2s %.2f",standardMember.getId(),
-                "",standardMember.getFirstName(),standardMember.getLastName(),"",standardMember.getPayment()));
+        // hardcodedStandard used to ensure hardcoded member is created once
+        if (hardcodedStandard < 1) {
+            standardMembers.add(new StandardMember("Chuka", "Nwobi", 100));
+            hardcodedStandard++;
+        }
+        printListHeader();
+
+        standardMembers.forEach(standardMember -> System.out.printf("\n%1d. %-23s %-2s %-20s %2s %.2f %-20s %.2f ", standardMember.getId(),
+                "", standardMember.getFirstName(), standardMember.getLastName(), "", standardMember.getPayment(), "", standardMember.getDISCOUNTEDAMOUNT()));
         System.out.println();
+
         boolean processing = true;
         Scanner scanInput = new Scanner(System.in);
 
+        while (processing) {
+
+            try {
+                System.out.println("Enter ID of an existing client or  0 to enter a new one: ");
+                int choice = scanInput.nextInt();
+
+
+
+                if (choice == 0) {
+
+                    System.out.println("Please Enter the First name of the new member: ");
+                    scanInput.nextLine();
+                    String firstName = scanInput.nextLine();
+
+                    System.out.println("Please Enter the Last Name For this new member");
+                    String lastName = scanInput.nextLine();
+                    System.out.println("Enter Amount For This Payment: ");
+                    double payment = scanInput.nextDouble();
+                    processingMessage("Standard");
+                    standardMembers.add(new StandardMember(firstName, lastName, payment));
+                    processing = false;
+
+
+                } else if (choice < 0) {
+                    System.out.println("Invalid Entry");
+                    System.out.println("Enter ID of an existing client or  0 to enter a new one: ");
+                    scanInput.next();
+                    
+                } else if (choice >= 1) {
+
+
+                    if (standardMembers.size() > 0) {
+
+                        for (StandardMember standardMember : standardMembers) {
+
+                            try {
+                                if (standardMember.getId() == choice) {
+                                    System.out.println("Member found " + standardMember.getFirstName());
+                                    System.out.println("Enter Amount For This Payment: ");
+                                    double payment = scanInput.nextDouble();
+                                    processingMessage("Standard");
+                                    standardMember.addPayment(payment);
+                                    processing = false;
+                                } else {
+                                    System.out.println("No Member with the Id: " + choice + " was found");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Error! Payment must be an integer or decimal number only");
+                                scanInput.next();
+                            }
+                        }
+                    } else {
+                        System.out.println("No Member with the Id: " + choice + " was found");
+                    }
+
+                }
+
+
+                System.out.println(standardMembers.toString());
+            } catch (Exception e) {
+                System.out.println("Unexpected Input...An Integer ID was expected   \nPlease Try Again");
+                scanInput.next();
+                System.out.println("\n\n");
+            } finally {
+                // Close the scanner
+
+                    scanInput.close();
+
+            }
+        }
+
+    }
+
+    public void loyaltyPayments() {
+        //This method processes loyalty payments
+        //hardcoded loyalty client
+
+        if (hardcodedLoyalty < 1) {
+            loyaltyMembers.add(new LoyaltyMember("Malcom", "Turnbull", 170));
+            hardcodedLoyalty++;
+        }
+        printListHeader();
+        loyaltyMembers.forEach(loyaltyMember -> System.out.printf("\n%1d. %-23s %-2s %-20s %2s %.2f %-20s %.2f", loyaltyMember.getId(),
+                "", loyaltyMember.getFirstName(), loyaltyMember.getLastName(), "", loyaltyMember.getPayment(), "", loyaltyMember.getDiscount()));
+        System.out.println();
+
+        boolean processing = true;
+        Scanner scanInput = new Scanner(System.in);
         while (processing) {
 
             try {
@@ -130,8 +252,8 @@ public class Menu {
                     String lastName = scanInput.nextLine();
                     System.out.println("Enter Amount For This Payment: ");
                     double payment = scanInput.nextDouble();
-
-                    standardMembers.add(new StandardMember(firstName, lastName, payment));
+                    processingMessage("Loyalty");
+                    loyaltyMembers.add(new LoyaltyMember(firstName, lastName, payment));
                     processing = false;
 
 
@@ -141,40 +263,150 @@ public class Menu {
                     scanInput.next();
                 } else if (choice >= 1) {
 
-                    if(standardMembers.size()> 0){
-                        for (StandardMember standardMember : standardMembers) {
-                            if (  standardMember.getId() == choice) {
-                                System.out.println("Member found " + standardMember.getFirstName());
+                    if (loyaltyMembers.size() > 0) {
+                        for (LoyaltyMember loyaltyMember : loyaltyMembers) {
+                            if (loyaltyMember.getId() == choice) {
+                                System.out.println("Member found " + loyaltyMember.getFirstName());
                                 System.out.println("Enter Amount For This Payment: ");
                                 double payment = scanInput.nextDouble();
-                                standardMember.addPayment(payment);
+                                processingMessage("Loyalty");
+                                loyaltyMember.addPayment(payment);
                                 processing = false;
                             } else {
                                 System.out.println("No Member with the Id: " + choice + " was found");
                             }
                         }
-                    }
-
-                    else{
+                    } else {
                         System.out.println("No Member with the Id: " + choice + " was found");
                     }
 
                 }
 
 
-                System.out.println(standardMembers.toString());
-            }
-            catch (Exception e){
+                System.out.println(loyaltyMembers.toString());
+            } catch (Exception e) {
                 System.out.println("Unexpected Input...An Integer ID was expected   \nPlease Try Again");
                 scanInput.next();
                 System.out.println("\n\n");
+            } finally {
+                // Close the scanner
+
+                    scanInput.close();
+
+            }
+        }
+
+
+    }
+
+    public void employeePayment() {
+        //This method processes employee payments
+        //hardcoded employee client
+
+        if (hardcodedEmployee < 1) {
+            staffMembers.add(new StaffMember("Donald", "Trump", 1000));
+            hardcodedEmployee++;
+        }
+        printListHeader();
+        staffMembers.forEach(staffMember -> System.out.printf("\n%1d. %-23s %-2s %-20s %2s %.2f %-20s %.2f", staffMember.getId(),
+                "", staffMember.getFirstName(), staffMember.getLastName(), "", staffMember.getPayment(), "", staffMember.getDiscount()));
+        System.out.println();
+
+        boolean processing = true;
+        Scanner scanInput = new Scanner(System.in);
+        while (processing) {
+
+            try {
+                System.out.println("Enter ID of an existing client or  0 to enter a new one: ");
+                int choice = scanInput.nextInt();
+                if (choice == 0) {
+
+                    System.out.println("Please Enter the First name of the new member: ");
+                    scanInput.nextLine();
+                    String firstName = scanInput.nextLine();
+
+                    System.out.println("Please Enter the Last Name For this new member");
+                    String lastName = scanInput.nextLine();
+                    System.out.println("Enter Amount For This Payment: ");
+                    double payment = scanInput.nextDouble();
+                    processingMessage("Employee");
+                    staffMembers.add(new StaffMember(firstName, lastName, payment));
+                    processing = false;
+
+
+                } else if (choice < 0) {
+                    System.out.println("Invalid Entry");
+                    System.out.println("Enter ID of an existing client or  0 to enter a new one: ");
+                    scanInput.next();
+                } else if (choice >= 1) {
+
+                    if (staffMembers.size() > 0) {
+                        for (StaffMember staffMember : staffMembers) {
+                            if (staffMember.getId() == choice) {
+                                System.out.println("Member found " + staffMember.getFirstName());
+                                System.out.println("Enter Amount For This Payment: ");
+                                double payment = scanInput.nextDouble();
+                                processingMessage("Employee");
+                                staffMember.addPayment(payment);
+                                processing = false;
+                            } else {
+                                System.out.println("No Member with the Id: " + choice + " was found");
+                            }
+                        }
+                    } else {
+                        System.out.println("No Member with the Id: " + choice + " was found");
+                    }
+
+                }
+
+
+                System.out.println(staffMembers.toString());
+            } catch (Exception e) {
+                System.out.println("Unexpected Input...An Integer ID was expected   \nPlease Try Again");
+                scanInput.next();
+                System.out.println("\n\n");
+            } finally {
+                // Close the scanner
+
+                    scanInput.close();
+
             }
         }
 
     }
-    public void loyaltyPayments(){
-        //This method processes loyalty payments
 
+    public void listClients() {
+        printListHeader();
+        System.out.println("Standard Clients: ");
+        standardMembers.forEach(standardMember -> System.out.printf("\n%1d. %-23s %-2s %-20s %2s %.2f %-20s %.2f ", standardMember.getId(),
+                "", standardMember.getFirstName(), standardMember.getLastName(), "", standardMember.getPayment(), "", standardMember.getDISCOUNTEDAMOUNT()));
+        System.out.println("\n Loyalty Members: ");
+        loyaltyMembers.forEach(loyaltyMember -> System.out.printf("\n%1d. %-23s %-2s %-20s %2s %.2f %-20s %.2f", loyaltyMember.getId(),
+                "", loyaltyMember.getFirstName(), loyaltyMember.getLastName(), "", loyaltyMember.getPayment(), "", loyaltyMember.getDiscount()));
+        System.out.println("\nEmployee Clients: ");
+        staffMembers.forEach(staffMember -> System.out.printf("\n%1d. %-23s %-2s %-20s %2s %.2f %-20s %.2f", staffMember.getId(),
+                "", staffMember.getFirstName(), staffMember.getLastName(), "", staffMember.getPayment(), "", staffMember.getDiscount()));
+        System.out.println();
+    }
+
+    public void printListHeader() {
+        //header of all printed lists of payment
+        System.out.println("--List of Clients--\n" +
+                "Client ID                  Name                   Total Amount              Discounted Amount");
+    }
+
+    public void processingMessage(String type) {
+        //standard processing message on console
+        System.out.println("--Processing " + type + " Payment--");
+        System.out.println("..." + " \n..." + " \nFinished processing payment");
+
+    }
+
+    public void dash() {
+        //this method just prints the dash
+        for (int i = 0; i < 78; i++) {
+            System.out.print("-");
+        }
     }
 }//public class Menu
 
