@@ -5,8 +5,8 @@ import services.Discount;
 public class LoyaltyMember extends StandardMember implements Discount {
     private double discountedPayment;
     private double discount;
-    private static double totalDiscountedPayment;
-    private static double totalDiscountGiven;
+    private static double totalDiscountedPayment=0;
+    private static double totalDiscountGiven=0;
 
     public LoyaltyMember(String firstName, String lastName, double payment) {
         super(firstName, lastName);
@@ -17,12 +17,16 @@ public class LoyaltyMember extends StandardMember implements Discount {
     @Override
     public void discount() {
         discount += 0.1 * getPayment();
+
         totalDiscountGiven += discount;
-        System.out.println("totalDiscountGiven: " + totalDiscountGiven);
+
+
         discountedPayment += 0.9 * getPayment();
+
         totalDiscountedPayment += discountedPayment;
         super.setPayment(discountedPayment);
-
+        System.out.println("\nDiscount: " +discount);
+        System.out.println("\n\n\ntotal discount given: " +totalDiscountGiven+"\ndiscount payment: "+discountedPayment +"\ntotal discounted payment: "+totalDiscountedPayment);
 
     }
 
@@ -38,9 +42,9 @@ public class LoyaltyMember extends StandardMember implements Discount {
 
     @Override
     public void addPayment(double newPayment) {
-        discount += 0.2 * newPayment;
+        discount += 0.1 * newPayment;
         totalDiscountGiven += discount;
-        discountedPayment += 0.8 * newPayment;
+        discountedPayment += 0.9 * newPayment;
         totalDiscountedPayment += discountedPayment;
         super.setPayment(discountedPayment);
     }
@@ -56,4 +60,5 @@ public class LoyaltyMember extends StandardMember implements Discount {
     public static double getTotalDiscountedPayment() {
         return totalDiscountedPayment;
     }
+
 }

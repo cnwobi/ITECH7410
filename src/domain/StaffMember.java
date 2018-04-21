@@ -20,7 +20,7 @@ public class StaffMember extends StandardMember implements Discount {
         discount += 0.2 * getPayment();
         //calculate total discount for all instances
         totalDiscountGiven += discount;
-        System.out.println("totalDiscountGiven: " + totalDiscountGiven);
+
         discountedPayment += 0.8 * getPayment();
         totalDiscountedPayment += discountedPayment;
         super.setPayment(discountedPayment);

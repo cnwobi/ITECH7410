@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-    int id = 1;
+
     private static int hardcodedLoyalty = 0;
     private static int hardcodedEmployee = 0;
     private static int hardcodedStandard = 0;
@@ -50,7 +50,7 @@ public class Menu {
 
     private void header() {
         // Display program header information
-        System.out.println("Matthew's Emporium");
+        System.out.println("FedHire Car Hire");
         System.out.println("Payment Tracking System");
         System.out.println("==========================");
         System.out.println();
@@ -141,7 +141,7 @@ public class Menu {
             hardcodedStandard++;
         }
         printListHeader();
-
+//print out the list of all standard members with payments and applicable discounts
         standardMembers.forEach(standardMember -> System.out.printf("\n%1d. %-23s %-2s %-20s %2s %.2f %-20s %.2f ", standardMember.getId(),
                 "", standardMember.getFirstName(), standardMember.getLastName(), "", standardMember.getPayment(), "", standardMember.getDISCOUNTEDAMOUNT()));
         System.out.println();
@@ -156,27 +156,38 @@ public class Menu {
                 int choice = scanInput.nextInt();
 
 
-
                 if (choice == 0) {
-
+                    // if choice ==0 create a new standard member client
                     System.out.println("Please Enter the First name of the new member: ");
                     scanInput.nextLine();
                     String firstName = scanInput.nextLine();
 
                     System.out.println("Please Enter the Last Name For this new member");
                     String lastName = scanInput.nextLine();
-                    System.out.println("Enter Amount For This Payment: ");
-                    double payment = scanInput.nextDouble();
-                    processingMessage("Standard");
-                    standardMembers.add(new StandardMember(firstName, lastName, payment));
-                    processing = false;
 
-
+                    //validate that amount input for the new customer is a positive integer
+                    while (processing) {
+                        try {
+                            System.out.println("Enter Amount For This Payment: ");
+                            double payment = scanInput.nextDouble();
+                            if (payment >= 0) {
+                                processingMessage("Standard");
+                                standardMembers.add(new StandardMember(firstName, lastName, payment));
+                                processing = false;
+                            } else {
+                                System.out.println("Amount must be a positive integer or decimal");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error Amount entered in the incorrect format");
+                            System.out.println();
+                            scanInput.next();
+                        }
+                    }
                 } else if (choice < 0) {
                     System.out.println("Invalid Entry");
                     System.out.println("Enter ID of an existing client or  0 to enter a new one: ");
                     scanInput.next();
-                    
+
                 } else if (choice >= 1) {
 
 
@@ -187,11 +198,30 @@ public class Menu {
                             try {
                                 if (standardMember.getId() == choice) {
                                     System.out.println("Member found " + standardMember.getFirstName());
-                                    System.out.println("Enter Amount For This Payment: ");
-                                    double payment = scanInput.nextDouble();
-                                    processingMessage("Standard");
-                                    standardMember.addPayment(payment);
-                                    processing = false;
+                                    // validate that input is positive
+                                    while (processing) {
+                                        try {
+
+                                            System.out.println("Enter Amount For This Payment: ");
+                                            double payment = scanInput.nextDouble();
+
+                                            if (payment >= 0) {
+                                                processingMessage("Standard");
+                                                standardMember.addPayment(payment);
+                                                processing = false;
+                                            } else {
+                                                System.out.println("Amount must be a positive integer or decimal");
+                                            }
+                                        }
+                                        catch (Exception e){
+                                            System.out.println("Error Amount entered in the incorrect format");
+                                            System.out.println();
+                                            scanInput.next();
+                                        }
+
+
+                                    }
+
                                 } else {
                                     System.out.println("No Member with the Id: " + choice + " was found");
                                 }
@@ -212,11 +242,6 @@ public class Menu {
                 System.out.println("Unexpected Input...An Integer ID was expected   \nPlease Try Again");
                 scanInput.next();
                 System.out.println("\n\n");
-            } finally {
-                // Close the scanner
-
-                    scanInput.close();
-
             }
         }
 
@@ -250,11 +275,24 @@ public class Menu {
 
                     System.out.println("Please Enter the Last Name For this new member");
                     String lastName = scanInput.nextLine();
-                    System.out.println("Enter Amount For This Payment: ");
-                    double payment = scanInput.nextDouble();
-                    processingMessage("Loyalty");
-                    loyaltyMembers.add(new LoyaltyMember(firstName, lastName, payment));
-                    processing = false;
+                    //validate that amount is a positive integer or decimal
+                    while (processing) {
+                        try {
+                            System.out.println("Enter Amount For This Payment: ");
+                            double payment = scanInput.nextDouble();
+                            if (payment >= 0) {
+                                processingMessage("Loyalty");
+                                loyaltyMembers.add(new LoyaltyMember(firstName, lastName, payment));
+                                processing = false;
+                            } else {
+                                System.out.println("Error! Payment must be an integer or decimal number only");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error Amount entered in the incorrect format");
+                            System.out.println();
+                            scanInput.next();
+                        }
+                    }
 
 
                 } else if (choice < 0) {
@@ -267,13 +305,26 @@ public class Menu {
                         for (LoyaltyMember loyaltyMember : loyaltyMembers) {
                             if (loyaltyMember.getId() == choice) {
                                 System.out.println("Member found " + loyaltyMember.getFirstName());
-                                System.out.println("Enter Amount For This Payment: ");
-                                double payment = scanInput.nextDouble();
-                                processingMessage("Loyalty");
-                                loyaltyMember.addPayment(payment);
-                                processing = false;
-                            } else {
-                                System.out.println("No Member with the Id: " + choice + " was found");
+                                // validate that input is positive on updating an existing client
+                                while (processing) {
+                                    try {
+                                        System.out.println("Enter Amount For This Payment: ");
+                                        double payment = scanInput.nextDouble();
+
+                                        if (payment >= 0) {
+                                            processingMessage("Loyalty");
+                                            loyaltyMember.addPayment(payment);
+                                            processing = false;
+                                        } else {
+                                            System.out.println("Amount must be a positive integer or decimal");
+                                        }
+                                    }
+                                    catch (Exception e){
+                                        System.out.println("Error Amount entered in the incorrect format");
+                                        System.out.println();
+                                        scanInput.next();
+                                    }
+                                }
                             }
                         }
                     } else {
@@ -288,11 +339,6 @@ public class Menu {
                 System.out.println("Unexpected Input...An Integer ID was expected   \nPlease Try Again");
                 scanInput.next();
                 System.out.println("\n\n");
-            } finally {
-                // Close the scanner
-
-                    scanInput.close();
-
             }
         }
 
@@ -327,12 +373,23 @@ public class Menu {
 
                     System.out.println("Please Enter the Last Name For this new member");
                     String lastName = scanInput.nextLine();
-                    System.out.println("Enter Amount For This Payment: ");
-                    double payment = scanInput.nextDouble();
-                    processingMessage("Employee");
-                    staffMembers.add(new StaffMember(firstName, lastName, payment));
-                    processing = false;
-
+                    while (processing) {
+                        try {
+                            System.out.println("Enter Amount For This Payment: ");
+                            double payment = scanInput.nextDouble();
+                            if (payment >= 0) {
+                                processingMessage("Employee");
+                                staffMembers.add(new StaffMember(firstName, lastName, payment));
+                                processing = false;
+                            } else {
+                                System.out.println("Amount must be a positive integer or decimal");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error Amount entered in the incorrect format");
+                            System.out.println();
+                            scanInput.next();
+                        }
+                    }
 
                 } else if (choice < 0) {
                     System.out.println("Invalid Entry");
@@ -344,11 +401,29 @@ public class Menu {
                         for (StaffMember staffMember : staffMembers) {
                             if (staffMember.getId() == choice) {
                                 System.out.println("Member found " + staffMember.getFirstName());
-                                System.out.println("Enter Amount For This Payment: ");
-                                double payment = scanInput.nextDouble();
-                                processingMessage("Employee");
-                                staffMember.addPayment(payment);
-                                processing = false;
+                                // validate that input is positive on updating an existing client
+                                /*Input is wrapped in a try catch block to handle input mismatch exceptions
+                                * the if statement in the while block is used to ensure negative amounts are not accepted in the systems*/
+                                while (processing) {
+                                    try {
+                                    System.out.println("Enter Amount For This Payment: ");
+                                    double payment = scanInput.nextDouble();
+
+                                    if (payment >= 0) {
+                                        processingMessage("Employee");
+                                        staffMember.addPayment(payment);
+                                        processing = false;
+                                    } else {
+                                        System.out.println("\nAmount must be a positive integer or decimal");
+                                        System.out.println();
+                                    }
+                                }
+                                catch (Exception e){
+                                    System.out.println("Error Amount entered in the incorrect format");
+                                    System.out.println();
+                                    scanInput.next();
+                                }
+                                }
                             } else {
                                 System.out.println("No Member with the Id: " + choice + " was found");
                             }
@@ -365,11 +440,6 @@ public class Menu {
                 System.out.println("Unexpected Input...An Integer ID was expected   \nPlease Try Again");
                 scanInput.next();
                 System.out.println("\n\n");
-            } finally {
-                // Close the scanner
-
-                    scanInput.close();
-
             }
         }
 
