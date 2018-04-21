@@ -96,26 +96,7 @@ public class Menu {
                 break;
             case 5:
                 // call method to generate report to display payments received here
-                System.out.println("--Report to View Payments Received--");
-                dash();
-                System.out.println();
-                System.out.printf("%-30s %-30s %-30s  ", "Type of Account", "Total Amount Received", "Discounts Given");
-                System.out.println();
-                dash();
-                System.out.println();
-                System.out.printf("%-30s %-15s %.2f %-15s %.2f  ", "Standard", "", StandardMember.getTotalPayment(), "", StandardMember.getDISCOUNTEDAMOUNT());
-                System.out.println();
-                System.out.printf("%-30s %-15s %.2f %-15s %.2f  ", "Loyalty", "", LoyaltyMember.getTotalDiscountedPayment(), "", LoyaltyMember.getTotalDiscountGiven());
-                System.out.println();
-                System.out.printf("%-30s %-15s %.2f %-15s %.2f  ", "Employee", "", StaffMember.getTotalDiscountedPayment(), "", StaffMember.getTotalDiscountGiven());
-                System.out.println();
-                dash();
-                double grandTotalDiscount = StaffMember.getTotalDiscountGiven() + LoyaltyMember.getTotalDiscountGiven();
-                double grandTotal = StandardMember.getTotalPayment() + LoyaltyMember.getTotalDiscountedPayment() + StaffMember.getTotalDiscountedPayment();
-                System.out.printf("\n%-30s %-15s %.2f %-15s %.2f  ", "Total", "", grandTotal, "", grandTotalDiscount);
-                System.out.println();
-                dash();
-                System.out.println();
+                generateReport();
                 break;
             case 6:
                 System.out.println("-- Exiting FedHire Payment System --\n ....\n  -- Goodbye! --\n");
@@ -334,7 +315,7 @@ public class Menu {
                 }
 
 
-                System.out.println(loyaltyMembers.toString());
+
             } catch (Exception e) {
                 System.out.println("Unexpected Input...An Integer ID was expected   \nPlease Try Again");
                 scanInput.next();
@@ -402,8 +383,10 @@ public class Menu {
                             if (staffMember.getId() == choice) {
                                 System.out.println("Member found " + staffMember.getFirstName());
                                 // validate that input is positive on updating an existing client
-                                /*Input is wrapped in a try catch block to handle input mismatch exceptions
-                                * the if statement in the while block is used to ensure negative amounts are not accepted in the systems*/
+                                /*
+                                *Input is wrapped in a try catch block to handle input mismatch exceptions
+                                * The if statement in the while block is used to ensure negative amounts are not accepted in the systems
+                                */
                                 while (processing) {
                                     try {
                                     System.out.println("Enter Amount For This Payment: ");
@@ -435,7 +418,6 @@ public class Menu {
                 }
 
 
-                System.out.println(staffMembers.toString());
             } catch (Exception e) {
                 System.out.println("Unexpected Input...An Integer ID was expected   \nPlease Try Again");
                 scanInput.next();
@@ -446,6 +428,7 @@ public class Menu {
     }
 
     public void listClients() {
+// this method lists all clients according to their respective membership types
         printListHeader();
         System.out.println("Standard Clients: ");
         standardMembers.forEach(standardMember -> System.out.printf("\n%1d. %-23s %-2s %-20s %2s %.2f %-20s %.2f ", standardMember.getId(),
@@ -470,6 +453,29 @@ public class Menu {
         System.out.println("--Processing " + type + " Payment--");
         System.out.println("..." + " \n..." + " \nFinished processing payment");
 
+    }
+    public void generateReport(){
+        // call method to generate report to display payments received here
+        System.out.println("--Report to View Payments Received--");
+        dash();
+        System.out.println();
+        System.out.printf("%-30s %-30s %-30s  ", "Type of Account", "Total Amount Received", "Discounts Given");
+        System.out.println();
+        dash();
+        System.out.println();
+        System.out.printf("%-30s %-15s %.2f %-15s %.2f  ", "Standard", "", StandardMember.getTotalPayment(), "", StandardMember.getDISCOUNTEDAMOUNT());
+        System.out.println();
+        System.out.printf("%-30s %-15s %.2f %-15s %.2f  ", "Loyalty", "", LoyaltyMember.getTotalDiscountedPayment(), "", LoyaltyMember.getTotalDiscountGiven());
+        System.out.println();
+        System.out.printf("%-30s %-15s %.2f %-15s %.2f  ", "Employee", "", StaffMember.getTotalDiscountedPayment(), "", StaffMember.getTotalDiscountGiven());
+        System.out.println();
+        dash();
+        double grandTotalDiscount = StaffMember.getTotalDiscountGiven() + LoyaltyMember.getTotalDiscountGiven();
+        double grandTotal = StandardMember.getTotalPayment() + LoyaltyMember.getTotalDiscountedPayment() + StaffMember.getTotalDiscountedPayment();
+        System.out.printf("\n%-30s %-15s %.2f %-15s %.2f  ", "Total", "", grandTotal, "", grandTotalDiscount);
+        System.out.println();
+        dash();
+        System.out.println();
     }
 
     public void dash() {
