@@ -1,7 +1,3 @@
-package domain;
-
-
-
 public class StandardMember  {
 
     private String firstName;

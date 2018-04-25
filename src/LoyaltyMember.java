@@ -1,7 +1,3 @@
-package domain;
-
-import services.Discount;
-
 public class LoyaltyMember extends StandardMember implements Discount {
     private double discountedPayment;
     private double discount;
@@ -37,9 +33,9 @@ public class LoyaltyMember extends StandardMember implements Discount {
     @Override
     public void addPayment(double newPayment) {
         discount += 0.1 * newPayment;
-        totalDiscountGiven += discount;
+        totalDiscountGiven += 0.1 * newPayment;
         discountedPayment += 0.9 * newPayment;
-        totalDiscountedPayment += discountedPayment;
+        totalDiscountedPayment += 0.9 * newPayment;
         super.setPayment(discountedPayment);
     }
 

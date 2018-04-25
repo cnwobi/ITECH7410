@@ -1,9 +1,3 @@
-package controller;
-
-import domain.LoyaltyMember;
-import domain.StaffMember;
-import domain.StandardMember;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 

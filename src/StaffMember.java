@@ -1,7 +1,3 @@
-package domain;
-
-import services.Discount;
-
 public class StaffMember extends StandardMember implements Discount {
     private double discountedPayment;
     private double discount;
@@ -41,9 +37,9 @@ public class StaffMember extends StandardMember implements Discount {
     @Override
     public void addPayment(double newPayment) {
         discount += 0.2 * newPayment;
-        totalDiscountGiven += discount;
+        totalDiscountGiven += 0.2 * newPayment;
         discountedPayment += 0.8 * newPayment;
-        totalDiscountedPayment += discountedPayment;
+        totalDiscountedPayment += 0.8 * newPayment;
         super.setPayment(discountedPayment);
     }
 
